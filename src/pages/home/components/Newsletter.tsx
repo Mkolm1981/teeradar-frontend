@@ -1,4 +1,6 @@
+// src/pages/home/components/Newsletter.tsx (uppdaterad)
 import { useState, FormEvent } from 'react';
+import { subscribe } from '../../../api/client';
 
 export default function Newsletter() {
   const [email, setEmail] = useState('');
@@ -13,21 +15,9 @@ export default function Newsletter() {
     setError('');
 
     try {
-      const body = new URLSearchParams();
-      body.append('email', email.trim());
-
-      const res = await fetch('https://readdy.ai/api/form/d6thhlgq778icnc8upag', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: body.toString(),
-      });
-
-      if (res.ok) {
-        setSubmitted(true);
-        setEmail('');
-      } else {
-        setError('Något gick fel. Försök igen.');
-      }
+      await subscribe(email.trim());
+      setSubmitted(true);
+      setEmail('');
     } catch {
       setError('Något gick fel. Försök igen.');
     } finally {
@@ -37,7 +27,6 @@ export default function Newsletter() {
 
   return (
     <section id="prenumerera" className="py-24 bg-tee-sand relative overflow-hidden">
-      {/* Background decoration */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute right-0 top-0 w-1/2 h-full opacity-20">
           <img
@@ -51,7 +40,6 @@ export default function Newsletter() {
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="max-w-2xl">
-          {/* Badge */}
           <div className="flex items-center gap-2 mb-4">
             <span className="w-2 h-2 rounded-full bg-tee-gold"></span>
             <span className="text-tee-gold text-sm font-semibold tracking-widest uppercase">Dagliga deals kl 20:00</span>
@@ -62,11 +50,10 @@ export default function Newsletter() {
           </h2>
 
           <p className="text-gray-600 text-lg leading-relaxed mb-4">
-            Varje kväll kl 20:00 mejlar vi dig kvällens bästa last-minute-priser på 
+            Varje kväll kl 20:00 mejlar vi dig kvällens bästa last-minute-priser på
             Costa del Sols golfbanor. Bli bland de första att veta.
           </p>
 
-          {/* Feature list */}
           <ul className="space-y-2 mb-8">
             {[
               'Exklusiva priser – syns bara i mejlet',
@@ -84,21 +71,14 @@ export default function Newsletter() {
             ))}
           </ul>
 
-          {/* Form */}
           {!submitted ? (
-            <form
-              onSubmit={handleSubmit}
-              data-readdy-form
-              id="newsletter-form"
-              className="flex flex-col sm:flex-row gap-3"
-            >
+            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 flex items-center gap-3">
                 <span className="w-5 h-5 flex items-center justify-center flex-shrink-0">
                   <i className="ri-mail-line text-gray-400 text-base"></i>
                 </span>
                 <input
                   type="email"
-                  name="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -128,9 +108,7 @@ export default function Newsletter() {
             </div>
           )}
 
-          {error && (
-            <p className="text-red-500 text-sm mt-3">{error}</p>
-          )}
+          {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
 
           <p className="text-gray-400 text-xs mt-3">
             Vi delar aldrig din e-postadress med tredje part. Läs vår{' '}
