@@ -175,4 +175,4 @@ export const subscribe = (email: string) =>
   apiFetch<{ success: boolean }>('/api/subscribe', {
     method: 'POST',
     body: JSON.stringify({ email }),
-  });
+  }); 
